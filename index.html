@@ -98,6 +98,19 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);
 .pal .nm{font-weight:600;font-size:14px}
 .pal small{margin:0}
 
+/* color picks */
+.cores{display:flex;flex-wrap:wrap;gap:14px}
+.cor{display:grid;justify-items:center;gap:6px;min-width:76px}
+.cor-sw{position:relative;width:56px;height:56px;border-radius:50%;border:1.5px dashed var(--muted);display:grid;place-items:center;cursor:pointer;background:var(--surface);transition:transform .15s}
+.cor-sw:hover{transform:scale(1.04)}
+.cor-sw::after{content:"+";font-size:22px;color:var(--muted);line-height:1}
+.cor-sw input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;border:0;padding:0}
+.cor.set .cor-sw{border:1px solid var(--line);background:var(--c)}
+.cor.set .cor-sw::after{content:""}
+.cor-sw:focus-within{outline:2px solid var(--accent);outline-offset:3px}
+.cor-hex{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em;text-transform:uppercase}
+.cor-x{font:500 12px var(--body);color:var(--muted);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
+
 /* uploads */
 .drop{border:1.5px dashed color-mix(in srgb,var(--accent) 50%,var(--line));border-radius:14px;padding:28px 20px;text-align:center;background:var(--surface);display:grid;gap:10px;justify-items:center}
 .drop.over{background:var(--accent-soft)}
@@ -152,7 +165,7 @@ footer .credit b{font-family:var(--display);font-style:italic;font-weight:400;fo
     <span class="eyebrow">Briefing do site · Fisioterapia para a pessoa idosa</span>
     <h1>Mariana, conte para nós <em>como é o seu cuidado.</em></h1>
     <p class="lead">Com estas respostas vamos escrever os textos, escolher as cores e montar cada página do seu site. Responda do seu jeito: o que não souber, pode deixar em branco.</p>
-    <div class="meta"><span><b>25 a 35 min</b> no total</span><span><b>Salva sozinho</b>, pode parar e voltar depois</span><span><b>7 partes</b>, incluindo envio de fotos</span></div>
+    <div class="meta"><span><b>25 a 35 min</b> no total</span><span><b>Salva sozinho</b>, pode parar e voltar depois</span><span><b>8 partes</b>, com fotos e um espaço livre para suas ideias</span></div>
     <nav class="toc" id="toc" aria-label="Partes do questionário"></nav>
   </header>
 
@@ -160,7 +173,7 @@ footer .credit b{font-family:var(--display);font-style:italic;font-weight:400;fo
 
   <section class="sec" id="fotos" aria-labelledby="fotos-h">
     <div class="sec-h">
-      <span class="k">Parte 7</span>
+      <span class="k">Parte 8</span>
       <h2 id="fotos-h">Fotos e logo</h2>
       <p>Fotos reais deixam o site com a sua cara. Vamos tratar cada imagem (luz, cor e enquadramento) antes de publicar.</p>
     </div>
@@ -299,6 +312,12 @@ const SECTIONS=[
   {id:"idiomas",type:"checkbox",label:"Atende em outros idiomas?",opts:["Só português","Inglês","Espanhol"],other:true,inline:true},
   {id:"numeros",type:"text",label:"Algum número que você gostaria de mostrar?",opt:true,help:"Ex.: anos de experiência, número de famílias atendidas. Nada de promessa de resultado.",ph:"Ex.: 9 anos de experiência, mais de 300 famílias atendidas"}
  ]},
+ {id:"ideias",opcional:true,title:"Do seu jeito",intro:"Um espaço livre, só se você quiser: pedidos, ideias, referências e cores. Se preferir deixar com a gente, é só pular.",qs:[
+  {id:"pedido",type:"textarea",opt:true,label:"Tem algum pedido especial para o site?",help:"Algo que não pode faltar, uma ideia que você viu por aí, um jeito de apresentar o seu trabalho.",ph:"Ex.: uma foto minha logo no início; um botão grande de WhatsApp; nada de fundo branco puro…"},
+  {id:"tipo_site",type:"checkbox",opt:true,label:"Como você imagina o site?",opts:[["Uma página única","Tudo em uma rolagem, direto ao ponto."],["Algumas páginas","Sobre, serviços e contato, cada um no seu lugar."],["Com dicas e artigos","Um cantinho de conteúdo para as famílias."],["Com agendamento","As pessoas marcam horário pelo próprio site."],["Deixo com vocês","Confio na escolha de vocês."]]},
+  {id:"estilo",type:"radio",opt:true,label:"Qual estilo tem mais a sua cara?",opts:[["Clean e minimalista","Muito respiro, pouca informação por vez."],["Acolhedor","Tons quentes, fotos próximas, linguagem de conversa."],["Elegante e sofisticado","Tipografia marcante e cores sóbrias."],["Leve e alegre","Cores mais vivas, clima solar e carioca."],["Deixo com vocês",""]]},
+  {id:"cores",type:"colors",opt:true,label:"Quer sugerir as suas próprias cores?",help:"Toque em um círculo para escolher até 3 cores. Se preferir, escreva o nome da cor no campo de pedidos."}
+ ]},
  {id:"fechamento",title:"Para fechar",intro:"Últimos detalhes.",qs:[
   {id:"ensaio",type:"radio",label:"Sobre fotos profissionais",opts:["Vou enviar fotos que já tenho","Quero um roteiro para tirar boas fotos com o celular","Pretendo fazer um ensaio com fotógrafo"]},
   {id:"prazo",type:"radio",label:"Tem alguma data em que gostaria do site no ar?",opts:["Sem pressa","Em até 1 mês","Tenho uma data específica"],other:true,otherLabel:"Qual data?"},
@@ -337,6 +356,12 @@ function renderQ(q){
     h+= q.type==="textarea"
       ? `<textarea id="${id}" name="${q.id}" placeholder="${esc(q.ph||"")}"></textarea>`
       : `<input id="${id}" name="${q.id}" type="${q.type}" placeholder="${esc(q.ph||"")}" autocomplete="off">`;
+  } else if(q.type==="colors"){
+    h+=`<span class="t" id="${id}-l">${esc(q.label)}${opt}</span>`;
+    if(q.help)h+=`<div class="help">${esc(q.help)}</div>`;
+    h+=`<div class="cores" role="group" aria-labelledby="${id}-l">`;
+    for(let i=0;i<3;i++)h+=`<div class="cor" id="${id}-box-${i}"><label class="cor-sw"><input type="color" id="${id}-pick-${i}" data-cor="${q.id}" data-i="${i}" value="#cccccc" aria-label="Escolher cor ${i+1}"></label><input type="hidden" id="${id}-${i}"><span class="cor-hex" id="${id}-hex-${i}">Cor ${i+1}</span><button type="button" class="cor-x" data-cor="${q.id}" data-i="${i}" hidden>remover</button></div>`;
+    h+=`</div>`;
   } else if(q.type==="palette"){
     h+=`<span class="t" id="${id}-l">${esc(q.label)}</span>`;
     if(q.help)h+=`<div class="help">${esc(q.help)}</div>`;
@@ -364,11 +389,23 @@ function renderQ(q){
 
 let html="";
 SECTIONS.forEach((s,i)=>{
-  html+=`<section class="sec" id="${s.id}" aria-labelledby="${s.id}-h"><div class="sec-h"><span class="k">Parte ${i+1}</span><h2 id="${s.id}-h">${esc(s.title)}</h2><p>${esc(s.intro)}</p></div>`;
+  html+=`<section class="sec" id="${s.id}" aria-labelledby="${s.id}-h"><div class="sec-h"><span class="k">Parte ${i+1}${s.opcional?" · opcional":""}</span><h2 id="${s.id}-h">${esc(s.title)}</h2><p>${esc(s.intro)}</p></div>`;
   s.qs.forEach(q=>html+=renderQ(q));
   html+=`</section>`;
 });
 formEl.innerHTML=html;
+function setCor(qid,i,val){
+  const id="q-"+qid;
+  document.getElementById(id+"-"+i).value=val||"";
+  const box=document.getElementById(id+"-box-"+i);
+  box.classList.toggle("set",!!val);
+  box.style.setProperty("--c",val||"transparent");
+  if(val)document.getElementById(id+"-pick-"+i).value=val;
+  document.getElementById(id+"-hex-"+i).textContent=val||"Cor "+(i+1);
+  box.querySelector(".cor-x").hidden=!val;
+}
+formEl.addEventListener("input",e=>{const t=e.target; if(t.dataset&&t.dataset.cor&&t.type==="color") setCor(t.dataset.cor,+t.dataset.i,t.value);});
+formEl.addEventListener("click",e=>{const b=e.target.closest(".cor-x"); if(b){setCor(b.dataset.cor,+b.dataset.i,""); formEl.dispatchEvent(new Event("input"));}});
 document.getElementById("q-wrap-autorizacao").outerHTML=renderQ(CONSENT);
 
 const ALLQ=[...SECTIONS.flatMap(s=>s.qs),CONSENT];
@@ -380,6 +417,7 @@ function readForm(){
   const out={};
   ALLQ.forEach(q=>{
     const id="q-"+q.id;
+    if(q.type==="colors"){const v=[0,1,2].map(i=>document.getElementById(id+"-"+i).value).filter(Boolean); if(v.length)out[q.id]=v; return;}
     if(["text","email","tel","textarea"].includes(q.type)){
       const v=document.getElementById(id).value.trim(); if(v)out[q.id]=v;
     } else {
@@ -396,6 +434,7 @@ function readForm(){
 function fillForm(a){
   ALLQ.forEach(q=>{
     const id="q-"+q.id;
+    if(q.type==="colors"){const v=[].concat(a[q.id]||[]); [0,1,2].forEach(i=>setCor(q.id,i,v[i]||"")); return;}
     if(["text","email","tel","textarea"].includes(q.type)){
       document.getElementById(id).value=a[q.id]||"";
     } else {
