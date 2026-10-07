@@ -448,6 +448,7 @@ function scheduleSave(){
 async function flush(force){
   if(!ON){persistLocal(); return false;}
   const a=readForm();
+  if(!force && !Object.keys(a).length){ setSave("Rascunho"); return true; }
   const sig=JSON.stringify([a,meta.status]);
   if(sig===lastSaved && !force){ setSave("Salvo"); return true; }
   if(saving){ pending=true; return; }
@@ -465,7 +466,7 @@ async function flush(force){
 formEl.addEventListener("input",scheduleSave);
 formEl.addEventListener("change",scheduleSave);
 document.getElementById("fotos").addEventListener("change",e=>{ if(e.target.name===CONSENT.id) scheduleSave(); });
-window.addEventListener("pagehide",()=>{ if(ON && JSON.stringify([readForm(),meta.status])!==lastSaved){ try{navigator.sendBeacon(ENDPOINT,new Blob([JSON.stringify({tipo:"respostas",id:meta.id,status:meta.status,respostas:readForm(),perguntas:PERGUNTAS})],{type:"text/plain"}))}catch(e){} } });
+window.addEventListener("pagehide",()=>{ if(ON && Object.keys(readForm()).length && JSON.stringify([readForm(),meta.status])!==lastSaved){ try{navigator.sendBeacon(ENDPOINT,new Blob([JSON.stringify({tipo:"respostas",id:meta.id,status:meta.status,respostas:readForm(),perguntas:PERGUNTAS})],{type:"text/plain"}))}catch(e){} } });
 
 /* ---------- SUMMARY (fallback) ---------- */
 function summaryText(){
