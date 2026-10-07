@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#2F5A4C">
+<title>Questionário Mariana Soares</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400..500&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: single reading column, sticky progress bar, sections as chapters of a clinical intake */
+:root{
+  --bg:#F2F3EF; --surface:#FFFFFF; --ink:#1D2622; --muted:#5E6B65; --line:#D9DDD6;
+  --accent:#2F5A4C; --accent-ink:#FFFFFF; --accent-soft:#E3ECE7; --warn:#8A5A1F; --warn-soft:#F6EEDF; --danger:#9B3B32;
+  --display:"Bodoni Moda", "Didot", Georgia, serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121715; --surface:#1A201D; --ink:#E7ECE8; --muted:#9AA7A0; --line:#2C3531;
+  --accent:#8FC2AE; --accent-ink:#0E1512; --accent-soft:#1F2E28; --warn:#E2B877; --warn-soft:#2B2416; --danger:#E08A80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121715; --surface:#1A201D; --ink:#E7ECE8; --muted:#9AA7A0; --line:#2C3531;
+  --accent:#8FC2AE; --accent-ink:#0E1512; --accent-soft:#1F2E28; --warn:#E2B877; --warn-soft:#2B2416; --danger:#E08A80; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding-inline:20px;padding-block:0 96px}
+a{color:var(--accent)}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar-in{max-width:760px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px}
+.mono{font-family:var(--display);font-style:italic;font-size:20px;letter-spacing:.02em;color:var(--accent);flex:none}
+.prog{flex:1;min-width:0}
+.prog-track{height:3px;background:var(--line);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;width:0;background:var(--accent);transition:width .4s ease}
+.prog-txt{font-size:12px;color:var(--muted);margin-top:4px;font-variant-numeric:tabular-nums;display:flex;justify-content:space-between;gap:8px}
+#saveState{white-space:nowrap}
+
+/* hero */
+header.hero{padding-block:56px 40px;display:grid;gap:18px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(38px,7vw,58px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1 em{color:var(--accent)}
+.lead{font-size:18px;color:var(--muted);max-width:60ch;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:14px;color:var(--muted)}
+.meta b{color:var(--ink);font-weight:600}
+
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin-block:8px 8px}
+nav.toc a{font-size:13px;text-decoration:none;color:var(--ink);border:1px solid var(--line);padding:6px 12px;border-radius:999px;display:inline-flex;gap:8px;align-items:center;background:var(--surface)}
+nav.toc a .n{color:var(--muted);font-variant-numeric:tabular-nums}
+nav.toc a.done{border-color:var(--accent);color:var(--accent)}
+
+/* sections */
+section.sec{padding-block:48px 8px;border-top:1px solid var(--line);scroll-margin-top:70px}
+.sec-h{display:grid;gap:6px;margin-bottom:28px}
+.sec-h .k{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(28px,5vw,36px);line-height:1.15;margin:0;text-wrap:balance}
+.sec-h p{margin:0;color:var(--muted);max-width:62ch}
+
+.q{display:grid;gap:10px;padding-block:20px;border-bottom:1px dashed var(--line)}
+.q:last-child{border-bottom:0}
+.q>label.t,.q>.t{font-weight:600;font-size:16px;line-height:1.4}
+.q .help{font-size:14px;color:var(--muted);margin-top:-4px;max-width:62ch}
+.q .opt-tag{font-weight:400;color:var(--muted);font-size:13px;margin-left:6px}
+input[type=text],input[type=email],input[type=tel],textarea,select{
+  width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;transition:border-color .15s, box-shadow .15s}
+textarea{min-height:110px;resize:vertical;line-height:1.55}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.choices{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.choices.one{grid-template-columns:1fr}
+.ch{position:relative;display:flex;gap:10px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);cursor:pointer;line-height:1.4;font-size:15px;transition:border-color .15s, background .15s}
+.ch:hover{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.ch input{appearance:none;flex:none;width:18px;height:18px;margin:1px 0 0;border:1.5px solid var(--muted);border-radius:4px;display:grid;place-items:center;background:var(--surface)}
+.ch input[type=radio]{border-radius:50%}
+.ch input:checked{background:var(--accent);border-color:var(--accent)}
+.ch input[type=checkbox]:checked::after{content:"";width:9px;height:5px;border:2px solid var(--accent-ink);border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
+.ch input[type=radio]:checked::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent-ink)}
+.ch input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ch:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.ch small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.other{margin-top:4px}
+.counter{font-size:12px;color:var(--muted)}
+
+.note{font-size:14px;line-height:1.5;padding:12px 14px;border-radius:var(--r);background:var(--warn-soft);color:var(--ink);border:1px solid color-mix(in srgb,var(--warn) 30%,transparent)}
+.note b{color:var(--warn)}
+
+/* palettes */
+.pal{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.pal .ch{flex-direction:column;gap:10px;padding:10px}
+.pal .ch input{position:absolute;top:12px;right:12px;background:var(--surface)}
+.sw{display:flex;height:64px;border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.sw span{flex:1}
+.sw span:first-child{flex:2}
+.pal .nm{font-weight:600;font-size:14px}
+.pal small{margin:0}
+
+/* uploads */
+.drop{border:1.5px dashed color-mix(in srgb,var(--accent) 50%,var(--line));border-radius:14px;padding:28px 20px;text-align:center;background:var(--surface);display:grid;gap:10px;justify-items:center}
+.drop.over{background:var(--accent-soft)}
+.btn{font:600 15px/1 var(--body);border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);padding:13px 20px;border-radius:999px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.btn[disabled]{opacity:.5;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.cat-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.cat-row select{width:auto}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:16px}
+.ph{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:grid}
+.ph img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--line)}
+.ph .pi{padding:8px 10px;font-size:12px;color:var(--muted);display:grid;gap:4px;min-width:0}
+.ph .pi b{color:var(--ink);font-weight:600;font-size:12px;overflow-wrap:anywhere}
+.ph button{font:500 12px var(--body);color:var(--danger);background:none;border:0;padding:0;cursor:pointer;justify-self:start}
+.up-status{font-size:14px;color:var(--muted);min-height:1.4em}
+.empty{font-size:14px;color:var(--muted);text-align:center;padding:16px}
+
+/* final */
+.final{margin-top:48px;padding:28px;border-radius:16px;background:var(--surface);border:1px solid var(--line);display:grid;gap:14px}
+.final h3{font-family:var(--display);font-weight:400;font-size:26px;margin:0}
+.final p{margin:0;color:var(--muted)}
+#fallback textarea{min-height:180px;font-size:13px}
+.ok{color:var(--accent);font-weight:600}
+footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px}
+footer .credit{letter-spacing:.02em}
+footer .credit b{font-family:var(--display);font-style:italic;font-weight:400;font-size:15px;color:var(--ink)}
+
+@media (max-width:520px){
+  header.hero{padding-block:36px 28px}
+  .choices{grid-template-columns:1fr}
+  .final{padding:20px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<div class="bar" role="region" aria-label="Progresso">
+  <div class="bar-in">
+    <span class="mono" aria-hidden="true">MS</span>
+    <div class="prog">
+      <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+      <div class="prog-txt"><span id="progTxt">0 de 0 respondidas</span><span id="saveState">Rascunho</span></div>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Briefing do site · Fisioterapia para a pessoa idosa</span>
+    <h1>Mariana, conte para nós <em>como é o seu cuidado.</em></h1>
+    <p class="lead">Com estas respostas vamos escrever os textos, escolher as cores e montar cada página do seu site. Responda do seu jeito: o que não souber, pode deixar em branco.</p>
+    <div class="meta"><span><b>25 a 35 min</b> no total</span><span><b>Salva sozinho</b>, pode parar e voltar depois</span><span><b>7 partes</b>, incluindo envio de fotos</span></div>
+    <nav class="toc" id="toc" aria-label="Partes do questionário"></nav>
+  </header>
+
+  <div id="form"></div>
+
+  <section class="sec" id="fotos" aria-labelledby="fotos-h">
+    <div class="sec-h">
+      <span class="k">Parte 7</span>
+      <h2 id="fotos-h">Fotos e logo</h2>
+      <p>Fotos reais deixam o site com a sua cara. Vamos tratar cada imagem (luz, cor e enquadramento) antes de publicar.</p>
+    </div>
+
+    <div class="q">
+      <span class="t">Antes de enviar, algumas dicas</span>
+      <div class="help">Prefira luz natural, perto de uma janela. Mande o arquivo original, sem filtro. Fotos na horizontal e na vertical ajudam. Pelo WhatsApp a foto perde qualidade; aqui ela chega inteira.</div>
+      <div class="note"><b>Importante:</b> pelas regras do COFFITO, fotos e depoimentos de pacientes só podem ir para o site com autorização por escrito (termo de consentimento) do paciente ou responsável. Fotos de mãos, exercícios e ambiente, sem mostrar o rosto, são ótimas alternativas.</div>
+    </div>
+
+    <div class="q" id="q-wrap-autorizacao"></div>
+
+    <div class="q">
+      <span class="t">Enviar fotos</span>
+      <div id="uploadOn" hidden>
+        <div class="drop" id="drop">
+          <div class="cat-row">
+            <label for="upCat" class="help" style="margin:0;align-self:center">Estas fotos são de:</label>
+            <select id="upCat">
+              <option>Retrato meu</option>
+              <option>Atendimentos</option>
+              <option>Consultório / equipamentos</option>
+              <option>Logo atual</option>
+              <option>Outros</option>
+            </select>
+          </div>
+          <label class="btn" for="upFile">Escolher fotos</label>
+          <input id="upFile" type="file" accept="image/*,.heic,.heif,application/pdf" multiple hidden>
+          <span class="help" style="margin:0">ou arraste para cá · fotos do celular, JPG, PNG, PDF · até 25 MB cada</span>
+          <div class="up-status" id="upStatus" aria-live="polite"></div>
+        </div>
+        <div class="gallery" id="gallery"></div>
+        <div class="empty" id="galEmpty">Nenhuma foto enviada ainda. As que você enviar aparecem aqui.</div>
+        <p class="help" id="sentCount" style="text-align:center;margin:8px 0 0"></p>
+      </div>
+      <div id="uploadOff" class="note">
+        <b>O envio de fotos por aqui ainda não está ativo.</b> Mande as fotos para o Felipe pelo WhatsApp como <i>Documento</i> (clipe › Documento), assim elas não perdem qualidade. Se preferir, use uma pasta do Google Drive.
+      </div>
+    </div>
+  </section>
+
+  <div class="final" id="final">
+    <h3>Tudo pronto?</h3>
+    <p>Suas respostas já ficam salvas enquanto você escreve. Quando terminar, toque em <b>Concluir</b> para avisar que pode começar o site. Você ainda poderá voltar e mudar algo.</p>
+    <div class="row">
+      <button class="btn" id="btnSend" type="button">Concluir questionário</button>
+      <span id="sendMsg" aria-live="polite"></span>
+    </div>
+    <div id="fallback" hidden>
+      <p style="margin-bottom:10px">Se preferir, copie o texto abaixo e envie para o Felipe pelo WhatsApp ou e-mail.</p>
+      <textarea id="fbText" readonly aria-label="Respostas em texto"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="btnCopy" type="button">Copiar respostas</button>
+        <a class="btn ghost" id="lnkWa" href="#" target="_blank" rel="noopener">Abrir no WhatsApp</a>
+        <span id="copyMsg" aria-live="polite"></span>
+      </div>
+    </div>
+  </div>
+
+  <footer><span>As respostas e fotos vão direto para o Google Drive do Felipe e não ficam públicas.</span><span class="credit">Desenvolvido por <b>Felipe Souza</b></span></footer>
+</main>
+
+<script>
+/* ---------- QUESTIONS ---------- */
+const RJ_AREAS=["Zona Sul (Copacabana, Ipanema, Leblon, Botafogo…)","Barra da Tijuca e Recreio","Grande Tijuca","Centro e Santa Teresa","Zona Norte","Jacarepaguá","Zona Oeste (Campo Grande, Bangu…)","Niterói","Baixada Fluminense","Região Serrana / Lagos (eventual)"];
+
+const SECTIONS=[
+ {id:"voce",title:"Quem é você",intro:"A parte \"Sobre\" do site. É o que faz alguém confiar antes mesmo da primeira conversa.",qs:[
+  {id:"nome",type:"text",label:"Como seu nome deve aparecer no site?",ph:"Ex.: Mariana Soares",help:"Pode incluir um nome do meio ou sobrenome que você usa profissionalmente."},
+  {id:"crefito",type:"text",label:"Seu número de registro no CREFITO-2",ph:"Ex.: CREFITO-2 / 123456-F",help:"O COFFITO exige nome completo e número do CREFITO em toda divulgação profissional."},
+  {id:"graduacao",type:"text",label:"Graduação: instituição e ano de formatura",ph:"Ex.: Fisioterapia, UFRJ, 2016"},
+  {id:"titulo_espec",type:"radio",label:"Você tem título de especialista em Fisioterapia em Gerontologia registrado no COFFITO?",help:"Só quem tem o título registrado pode se apresentar como \"especialista\" no site. Pós-graduação sem esse registro aparece como formação, sem a palavra \"especialista\".",opts:["Sim, tenho o título registrado","Tenho pós-graduação, mas sem o título registrado","Ainda não","Não sei"]},
+  {id:"pos",type:"textarea",label:"Pós-graduações, especializações e cursos importantes",ph:"Liste com instituição e ano. Ex.: Pós em Gerontologia (instituição, ano); Curso de Pilates para idosos (ano)…"},
+  {id:"anos",type:"radio",label:"Há quanto tempo você atende idosos?",opts:["Menos de 3 anos","3 a 5 anos","6 a 10 anos","Mais de 10 anos"],inline:true},
+  {id:"bio",type:"textarea",label:"Apresente-se em poucas frases, como faria para uma família que acabou de te conhecer",ph:"Não precisa estar perfeito. Nós vamos lapidar o texto."},
+  {id:"historia",type:"textarea",label:"Por que você escolheu trabalhar com pessoas idosas?",help:"Uma lembrança, um paciente marcante, alguém da família. Histórias reais são o que mais diferencia um site.",ph:"Conte livremente."},
+  {id:"valores",type:"checkbox",max:3,label:"Quais palavras mais descrevem o seu atendimento?",help:"Escolha até 3.",opts:["Acolhimento","Autonomia","Segurança","Dignidade","Paciência","Ciência e evidência","Proximidade com a família","Alegria e leveza","Escuta","Independência no dia a dia"],other:true},
+  {id:"fora",type:"textarea",label:"Algo sobre você fora do trabalho que gostaria de mostrar?",opt:true,ph:"Ex.: carioca de Botafogo, mãe, corre na orla, faz cerâmica…",help:"Detalhes pessoais aproximam, mas só se você quiser."}
+ ]},
+ {id:"atendimento",title:"Como você atende",intro:"Aqui nascem as páginas de serviços e a explicação de como funciona o atendimento.",qs:[
+  {id:"modalidade",type:"checkbox",label:"Onde você atende?",opts:["Na casa do paciente (domiciliar)","Em consultório próprio","Em clínica parceira","Em casas de repouso / ILPIs","Em hospital","Teleatendimento (vídeo)","Aulas ou grupos para idosos"],other:true},
+  {id:"regioes",type:"checkbox",label:"Quais regiões você atende?",opts:RJ_AREAS,other:true},
+  {id:"endereco",type:"text",label:"Endereço do consultório ou clínica (se houver)",opt:true,ph:"Rua, número, bairro"},
+  {id:"endereco_mostrar",type:"radio",label:"Esse endereço pode aparecer no site com mapa?",opts:["Sim, com endereço completo","Só o bairro","Não mostrar"],inline:true},
+  {id:"horarios",type:"text",label:"Dias e horários em que você atende",ph:"Ex.: seg a sex, 8h às 18h; sábados pela manhã"},
+  {id:"servicos",type:"checkbox",label:"O que você trata ou trabalha com seus pacientes?",help:"Marque tudo o que você faz. Depois escolha o principal na próxima pergunta.",opts:[
+    "Prevenção de quedas","Equilíbrio e marcha","Fortalecimento e perda de massa muscular (sarcopenia)","Osteoporose","Artrose e dores crônicas",
+    "Reabilitação após AVC","Doença de Parkinson","Alzheimer e outras demências","Pós-operatório (fratura de fêmur, prótese de quadril ou joelho)",
+    "Pós-internação / recuperação funcional","Fisioterapia respiratória","Pacientes acamados (prevenção de lesões e contraturas)","Cuidados paliativos",
+    "Incontinência urinária (assoalho pélvico)","Avaliação funcional geriátrica","Orientação a cuidadores e familiares","Adaptação da casa para segurança",
+    "Pilates / exercício terapêutico para idosos","Hidroterapia"],other:true},
+  {id:"carro_chefe",type:"text",label:"Qual é o seu serviço principal, aquele pelo qual quer ser lembrada?",ph:"Ex.: reabilitação domiciliar após fratura e prevenção de quedas"},
+  {id:"tecnicas",type:"textarea",label:"Técnicas, métodos ou equipamentos que você usa",opt:true,ph:"Ex.: Kabat, Bobath, eletroterapia, plataforma de equilíbrio…"},
+  {id:"primeira",type:"textarea",label:"Como funciona a primeira consulta, passo a passo?",help:"Famílias querem saber o que vai acontecer: avaliação, testes, conversa com a família, plano de tratamento…",ph:"Ex.: 1h de avaliação em casa, testes de equilíbrio, conversa com o cuidador, entrega de um plano…"},
+  {id:"sessoes",type:"text",label:"Duração e frequência mais comuns das sessões",ph:"Ex.: 50 min, 2 a 3 vezes por semana"},
+  {id:"publico",type:"checkbox",label:"Além de idosos, atende outros públicos?",opts:["Não, só idosos","Adultos em reabilitação","Pessoas com deficiência","Gestantes / pós-parto","Atletas / esportistas"],other:true},
+  {id:"pagamento",type:"checkbox",label:"Formas de atendimento e pagamento",opts:["Particular","Emito recibo / nota para reembolso do plano","Atendo por convênio"],other:true,otherLabel:"Quais convênios?"},
+  {id:"valores_site",type:"radio",label:"Quer mostrar valores no site?",help:"O COFFITO não permite promoções ou descontos na divulgação. A maioria das fisioterapeutas prefere passar valores na conversa.",opts:["Não, prefiro passar na conversa","Sim, um valor de referência","Ainda não sei"]}
+ ]},
+ {id:"contato",title:"Contato e agenda",intro:"O que acontece quando alguém decide te procurar. Todas as opções abaixo são gratuitas.",qs:[
+  {id:"whats",type:"tel",label:"WhatsApp profissional",ph:"(21) 9…"},
+  {id:"email",type:"email",label:"E-mail profissional",ph:"nome@…"},
+  {id:"insta",type:"text",label:"Instagram e outras redes profissionais",opt:true,ph:"@…, LinkedIn, Doctoralia…"},
+  {id:"agenda",type:"radio",label:"Como você quer que as pessoas marquem horário pelo site?",one:true,opts:[
+    ["Só um botão de WhatsApp","Já abre a conversa com uma mensagem pronta. Você combina o horário pessoalmente."],
+    ["Agenda online","A pessoa vê os horários livres e reserva sozinha. Funciona com o Google Agenda, sem custo."],
+    ["Pedido de horário","A família preenche nome, idade do paciente, bairro e motivo. Você recebe e retorna."],
+    ["Ainda não sei","Podemos começar com o WhatsApp e acrescentar depois."]]},
+  {id:"gagenda",type:"radio",label:"Você usa o Google Agenda hoje?",opts:["Sim","Não, uso outra agenda","Não uso agenda digital"],inline:true},
+  {id:"quem_procura",type:"checkbox",label:"Quem costuma entrar em contato com você?",help:"Isso define com quem o site conversa.",opts:["O próprio idoso","Filhos e familiares","Cuidadores","Médicos que encaminham","Casas de repouso / ILPIs"],other:true},
+  {id:"tempo_resposta",type:"radio",label:"Em quanto tempo você costuma responder mensagens?",opts:["No mesmo dia","Em até 24 horas","Em até 48 horas"],inline:true},
+  {id:"area_medicos",type:"radio",label:"Quer um espaço no site para médicos e outros profissionais que indicam pacientes?",opts:["Sim","Não","Talvez mais tarde"],inline:true}
+ ]},
+ {id:"visual",title:"Identidade visual",intro:"Cores, sensação e logo. As paletas abaixo foram montadas a partir de sites de fisioterapeutas e clínicas de referência.",qs:[
+  {id:"logo",type:"radio",label:"Você já tem logo?",opts:["Sim, e quero manter","Sim, mas quero renovar","Não tenho, quero criar uma"],help:"Se tiver, envie o arquivo na parte de fotos (categoria \"Logo atual\")."},
+  {id:"sensacao",type:"checkbox",max:3,label:"Que sensação o site deve passar?",help:"Escolha até 3.",opts:["Acolhedor","Sofisticado","Sereno","Confiável e técnico","Leve e alegre","Próximo, de família","Moderno","Carioca"]},
+  {id:"paleta",type:"palette",label:"Qual paleta combina mais com você?",help:"É um ponto de partida. Ajustamos depois.",opts:[
+    {n:"Eucalipto",d:"verde profundo, sálvia e pedra",c:["#2F5A4C","#A9C1B4","#E9ECE6","#C9B79C"]},
+    {n:"Atlântico",d:"azul petróleo, vidro do mar e areia",c:["#1F4E5F","#9CC5C0","#EEE8DD","#D69C5A"]},
+    {n:"Lavanda",d:"lilás acinzentado, grafite e névoa",c:["#5E5689","#B7B0D6","#F1EFF5","#3A3A42"]},
+    {n:"Oliva & Rosa",d:"oliva, rosa argila e linho",c:["#5F6640","#D3A9A0","#F1ECE3","#2E3328"]},
+    {n:"Azul sereno",d:"azul marinho suave, céu e branco",c:["#24395C","#9DB6D6","#F2F5F9","#C7A86A"]}
+  ],other:true,otherLabel:"Nenhuma; prefiro estas cores:"},
+  {id:"nao_cores",type:"text",label:"Alguma cor que você NÃO quer?",opt:true},
+  {id:"refs",type:"textarea",label:"Sites, perfis ou marcas que você acha bonitos",opt:true,help:"Podem ser de qualquer área: uma clínica, uma loja, um perfil do Instagram. Cole os links.",ph:"Links ou nomes"},
+  {id:"slogan",type:"text",label:"Tem alguma frase ou lema que gostaria de usar?",opt:true,ph:"Ex.: Movimento é autonomia em qualquer idade"},
+  {id:"dominio",type:"text",label:"Que endereço gostaria para o site?",help:"Veja se está livre em registro.br. Nomes curtos e fáceis de falar ao telefone funcionam melhor.",ph:"Ex.: marianasoares.com.br, marianasoaresfisio.com.br"}
+ ]},
+ {id:"conteudo",title:"Conteúdo do site",intro:"O que vai fazer o site ser útil para as famílias e encontrado no Google.",qs:[
+  {id:"perguntas",type:"textarea",label:"Quais perguntas as famílias mais fazem antes de fechar o tratamento?",help:"Vamos transformar isso na seção de perguntas frequentes.",ph:"Ex.: Quantas sessões vai precisar? Atende fim de semana? Precisa de pedido médico?"},
+  {id:"depo",type:"radio",label:"Você tem pacientes ou familiares que topariam dar um depoimento?",help:"Depoimentos precisam de autorização por escrito e não podem prometer resultados. Podemos usar só o primeiro nome.",opts:["Sim, já tenho alguns","Sim, posso pedir","Prefiro não usar depoimentos"]},
+  {id:"depo_texto",type:"textarea",label:"Se já tiver, cole aqui os depoimentos (com nome e autorização)",opt:true},
+  {id:"dicas",type:"radio",label:"Quer uma área de dicas e artigos (por exemplo, \"como deixar o banheiro mais seguro\")?",help:"Ajuda muito a aparecer no Google. Você mandaria temas e eu escrevo para você revisar.",opts:["Sim, quero","Talvez mais para frente","Não"]},
+  {id:"temas",type:"textarea",label:"Temas que você gostaria de explicar para as famílias",opt:true,ph:"Ex.: sinais de risco de queda, exercícios seguros em casa, como ajudar após um AVC…"},
+  {id:"parcerias",type:"textarea",label:"Parcerias, locais onde trabalhou ou trabalha, palestras e participações",opt:true,help:"Clínicas, hospitais, casas de repouso, entrevistas, eventos."},
+  {id:"idiomas",type:"checkbox",label:"Atende em outros idiomas?",opts:["Só português","Inglês","Espanhol"],other:true,inline:true},
+  {id:"numeros",type:"text",label:"Algum número que você gostaria de mostrar?",opt:true,help:"Ex.: anos de experiência, número de famílias atendidas. Nada de promessa de resultado.",ph:"Ex.: 9 anos de experiência, mais de 300 famílias atendidas"}
+ ]},
+ {id:"fechamento",title:"Para fechar",intro:"Últimos detalhes.",qs:[
+  {id:"ensaio",type:"radio",label:"Sobre fotos profissionais",opts:["Vou enviar fotos que já tenho","Quero um roteiro para tirar boas fotos com o celular","Pretendo fazer um ensaio com fotógrafo"]},
+  {id:"prazo",type:"radio",label:"Tem alguma data em que gostaria do site no ar?",opts:["Sem pressa","Em até 1 mês","Tenho uma data específica"],other:true,otherLabel:"Qual data?"},
+  {id:"extra",type:"textarea",label:"Mais alguma coisa que o site precisa ter, ou que você não quer de jeito nenhum?",opt:true}
+ ]}
+];
+/* consent question lives in the photos section */
+const CONSENT={id:"autorizacao",type:"radio",label:"As pessoas que aparecem nas fotos autorizaram por escrito?",opts:["Sim, tenho autorização de todos","Ainda vou pedir","As fotos não mostram rosto de pacientes"]};
+
+/* ---------- CONFIG ---------- */
+/* Cole aqui o endereço do App da Web do Google Apps Script (termina em /exec) */
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbwKdmf2u2REd5HtcyeYyfkIdf_yIic7hW_dwNq0PqWdoqqk6yd0jE_DG2LklBX7Gh126w/exec";
+
+/* ---------- STATE ---------- */
+const LS_KEY="mariana-q-v2";
+const ON = /^https:\/\/script\.google\.com\/.+\/exec$/.test(ENDPOINT);
+let meta={}, saveTimer=null, saving=false, pending=false, lastSaved="";
+
+function lsGet(){try{return JSON.parse(localStorage.getItem(LS_KEY)||"{}")}catch(e){return{}}}
+function lsSet(v){try{localStorage.setItem(LS_KEY,JSON.stringify(v))}catch(e){}}
+function uid(){return "r"+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+(function(){const l=lsGet(); meta={id:l.id||uid(),status:l.status||"rascunho",enviadas:l.enviadas||[]};})();
+function persistLocal(){lsSet({id:meta.id,status:meta.status,enviadas:meta.enviadas,respostas:readForm()})}
+
+/* ---------- RENDER ---------- */
+const formEl=document.getElementById("form"), tocEl=document.getElementById("toc");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+
+function renderQ(q){
+  const id="q-"+q.id;
+  let h=`<div class="q" data-q="${q.id}">`;
+  const opt=q.opt?`<span class="opt-tag">opcional</span>`:"";
+  if(["text","email","tel","textarea"].includes(q.type)){
+    h+=`<label class="t" for="${id}">${esc(q.label)}${opt}</label>`;
+    if(q.help)h+=`<div class="help">${esc(q.help)}</div>`;
+    h+= q.type==="textarea"
+      ? `<textarea id="${id}" name="${q.id}" placeholder="${esc(q.ph||"")}"></textarea>`
+      : `<input id="${id}" name="${q.id}" type="${q.type}" placeholder="${esc(q.ph||"")}" autocomplete="off">`;
+  } else if(q.type==="palette"){
+    h+=`<span class="t" id="${id}-l">${esc(q.label)}</span>`;
+    if(q.help)h+=`<div class="help">${esc(q.help)}</div>`;
+    h+=`<div class="pal" role="radiogroup" aria-labelledby="${id}-l">`;
+    q.opts.forEach((p,i)=>{
+      h+=`<label class="ch"><input type="radio" name="${q.id}" id="${id}-${i}" value="${esc(p.n)}"><div class="sw">${p.c.map(c=>`<span style="background:${c}"></span>`).join("")}</div><div><div class="nm">${esc(p.n)}</div><small>${esc(p.d)}</small></div></label>`;
+    });
+    h+=`</div>`;
+    if(q.other)h+=`<input class="other" type="text" id="${id}-other" name="${q.id}__other" placeholder="${esc(q.otherLabel||"Outra opção")}">`;
+  } else {
+    const t=q.type;
+    h+=`<span class="t" id="${id}-l">${esc(q.label)}${opt}</span>`;
+    if(q.help)h+=`<div class="help">${esc(q.help)}</div>`;
+    h+=`<div class="choices${q.one?" one":""}" role="${t==="radio"?"radiogroup":"group"}" aria-labelledby="${id}-l">`;
+    q.opts.forEach((o,i)=>{
+      const [lab,sub]=Array.isArray(o)?o:[o,""];
+      h+=`<label class="ch"><input type="${t}" name="${q.id}" id="${id}-${i}" value="${esc(lab)}"><span>${esc(lab)}${sub?`<small>${esc(sub)}</small>`:""}</span></label>`;
+    });
+    h+=`</div>`;
+    if(q.other)h+=`<input class="other" type="text" id="${id}-other" name="${q.id}__other" placeholder="${esc(q.otherLabel||"Outro (escreva aqui)")}">`;
+    if(q.max)h+=`<span class="counter" id="${id}-c"></span>`;
+  }
+  return h+`</div>`;
+}
+
+let html="";
+SECTIONS.forEach((s,i)=>{
+  html+=`<section class="sec" id="${s.id}" aria-labelledby="${s.id}-h"><div class="sec-h"><span class="k">Parte ${i+1}</span><h2 id="${s.id}-h">${esc(s.title)}</h2><p>${esc(s.intro)}</p></div>`;
+  s.qs.forEach(q=>html+=renderQ(q));
+  html+=`</section>`;
+});
+formEl.innerHTML=html;
+document.getElementById("q-wrap-autorizacao").outerHTML=renderQ(CONSENT);
+
+const ALLQ=[...SECTIONS.flatMap(s=>s.qs),CONSENT];
+const TOC=[...SECTIONS.map(s=>({id:s.id,title:s.title,qs:s.qs})),{id:"fotos",title:"Fotos e logo",qs:[CONSENT]}];
+tocEl.innerHTML=TOC.map((s,i)=>`<a href="#${s.id}" data-sec="${s.id}"><span class="n">${i+1}</span>${esc(s.title)}<span class="n" data-cnt></span></a>`).join("");
+
+/* ---------- READ / WRITE FIELDS ---------- */
+function readForm(){
+  const out={};
+  ALLQ.forEach(q=>{
+    const id="q-"+q.id;
+    if(["text","email","tel","textarea"].includes(q.type)){
+      const v=document.getElementById(id).value.trim(); if(v)out[q.id]=v;
+    } else {
+      const sel=[...document.querySelectorAll(`input[name="${q.id}"]:checked`)].map(e=>e.value);
+      const o=document.getElementById(id+"-other");
+      const ov=o?o.value.trim():"";
+      if(q.type==="checkbox"){ if(sel.length)out[q.id]=sel; }
+      else if(sel[0]) out[q.id]=sel[0];
+      if(ov)out[q.id+"__outro"]=ov;
+    }
+  });
+  return out;
+}
+function fillForm(a){
+  ALLQ.forEach(q=>{
+    const id="q-"+q.id;
+    if(["text","email","tel","textarea"].includes(q.type)){
+      document.getElementById(id).value=a[q.id]||"";
+    } else {
+      const vals=[].concat(a[q.id]||[]);
+      document.querySelectorAll(`input[name="${q.id}"]`).forEach(e=>e.checked=vals.includes(e.value));
+      const o=document.getElementById(id+"-other"); if(o)o.value=a[q.id+"__outro"]||"";
+    }
+  });
+  updateUI();
+}
+function answered(q,a){return a[q.id]!==undefined||a[q.id+"__outro"]!==undefined}
+
+function updateUI(){
+  const a=readForm();
+  const total=ALLQ.length, done=ALLQ.filter(q=>answered(q,a)).length;
+  document.getElementById("progFill").style.width=(done/total*100)+"%";
+  document.getElementById("progTxt").textContent=`${done} de ${total} respondidas`;
+  TOC.forEach(s=>{
+    const d=s.qs.filter(q=>answered(q,a)).length;
+    const el=tocEl.querySelector(`[data-sec="${s.id}"]`);
+    el.querySelector("[data-cnt]").textContent=`${d}/${s.qs.length}`;
+    el.classList.toggle("done",d===s.qs.length);
+  });
+  ALLQ.filter(q=>q.max).forEach(q=>{
+    const boxes=[...document.querySelectorAll(`input[name="${q.id}"]`)];
+    const n=boxes.filter(b=>b.checked).length;
+    boxes.forEach(b=>{ if(!b.checked) b.disabled=n>=q.max; b.closest(".ch").style.opacity=(!b.checked&&n>=q.max)?.5:1; });
+    document.getElementById("q-"+q.id+"-c").textContent=`${n} de ${q.max} escolhidas`;
+  });
+}
+
+
+/* ---------- SAVE ---------- */
+const saveEl=document.getElementById("saveState");
+function setSave(t){saveEl.textContent=t}
+const PERGUNTAS={}; ALLQ.forEach(q=>{PERGUNTAS[q.id]=q.label; if(q.other)PERGUNTAS[q.id+"__outro"]=q.label+" (outro)";});
+
+async function post(body){
+  const r=await fetch(ENDPOINT,{method:"POST",body:JSON.stringify(body)}); // text/plain: sem preflight
+  const j=await r.json();
+  if(!j.ok) throw new Error(j.erro||"erro");
+  return j;
+}
+function scheduleSave(){
+  updateUI(); persistLocal();
+  setSave(ON?"Salvando…":"Salvo neste aparelho");
+  if(!ON)return;
+  clearTimeout(saveTimer); saveTimer=setTimeout(()=>flush(),3000);
+}
+async function flush(force){
+  if(!ON){persistLocal(); return false;}
+  const a=readForm();
+  const sig=JSON.stringify([a,meta.status]);
+  if(sig===lastSaved && !force){ setSave("Salvo"); return true; }
+  if(saving){ pending=true; return; }
+  saving=true;
+  try{
+    await post({tipo:"respostas",id:meta.id,status:meta.status,respostas:a,perguntas:PERGUNTAS});
+    lastSaved=sig; setSave("Salvo"); return true;
+  }catch(e){
+    setSave("Sem conexão · salvo neste aparelho"); return false;
+  }finally{
+    saving=false;
+    if(pending){pending=false; flush();}
+  }
+}
+formEl.addEventListener("input",scheduleSave);
+formEl.addEventListener("change",scheduleSave);
+document.getElementById("fotos").addEventListener("change",e=>{ if(e.target.name===CONSENT.id) scheduleSave(); });
+window.addEventListener("pagehide",()=>{ if(ON && JSON.stringify([readForm(),meta.status])!==lastSaved){ try{navigator.sendBeacon(ENDPOINT,new Blob([JSON.stringify({tipo:"respostas",id:meta.id,status:meta.status,respostas:readForm(),perguntas:PERGUNTAS})],{type:"text/plain"}))}catch(e){} } });
+
+/* ---------- SUMMARY (fallback) ---------- */
+function summaryText(){
+  const a=readForm(); let t="QUESTIONÁRIO DO SITE · MARIANA SOARES\n";
+  TOC.forEach(s=>{
+    t+=`\n== ${s.title.toUpperCase()} ==\n`;
+    s.qs.forEach(q=>{
+      let v=a[q.id]; if(Array.isArray(v))v=v.join("; ");
+      const o=a[q.id+"__outro"];
+      if(v||o)t+=`• ${q.label}\n  ${[v,o&&("Outro: "+o)].filter(Boolean).join(" | ")}\n`;
+    });
+  });
+  return t;
+}
+
+/* ---------- SUBMIT ---------- */
+const sendMsg=document.getElementById("sendMsg"), btnSend=document.getElementById("btnSend");
+btnSend.addEventListener("click",async()=>{
+  clearTimeout(saveTimer);
+  btnSend.disabled=true; sendMsg.textContent="Enviando…";
+  meta.status="concluido"; persistLocal();
+  const ok=await flush(true);
+  btnSend.disabled=false;
+  if(ok){
+    sendMsg.innerHTML=`<span class="ok">Recebido. Obrigado, Mariana!</span>`;
+    btnSend.textContent="Atualizar respostas";
+    document.getElementById("fallback").hidden=true;
+  } else {
+    const t=summaryText();
+    document.getElementById("fbText").value=t;
+    document.getElementById("lnkWa").href="https://wa.me/?text="+encodeURIComponent(t.slice(0,6000));
+    document.getElementById("fallback").hidden=false;
+    sendMsg.textContent="Não conseguimos enviar agora. Tente de novo em instantes ou use a opção abaixo.";
+  }
+});
+document.getElementById("btnCopy").addEventListener("click",async()=>{
+  const ta=document.getElementById("fbText"), m=document.getElementById("copyMsg");
+  try{await navigator.clipboard.writeText(ta.value); m.textContent="Copiado.";}
+  catch(e){ta.focus();ta.select();m.textContent="Texto selecionado. Use Copiar do seu aparelho.";}
+});
+
+/* ---------- PHOTOS ---------- */
+const gallery=document.getElementById("gallery"), galEmpty=document.getElementById("galEmpty"), upStatus=document.getElementById("upStatus");
+const thumbs=[]; // miniaturas desta visita
+function renderGallery(){
+  const total=meta.enviadas.length;
+  galEmpty.hidden=total>0;
+  galEmpty.textContent="";
+  gallery.innerHTML=thumbs.map(p=>`<figure class="ph" style="margin:0">${p.url?`<img src="${p.url}" alt="${esc(p.categoria)}">`:`<div style="aspect-ratio:4/3;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);font-size:13px">${esc(p.ext)}</div>`}<figcaption class="pi"><b>${esc(p.categoria)}</b><span style="overflow-wrap:anywhere">${esc(p.nome)}</span></figcaption></figure>`).join("");
+  document.getElementById("sentCount").textContent= total? `${total} ${total===1?"arquivo enviado":"arquivos enviados"} até agora.`:"";
+}
+const EXT={"jpg":"image/jpeg","jpeg":"image/jpeg","png":"image/png","webp":"image/webp","heic":"image/heic","heif":"image/heif","gif":"image/gif","pdf":"application/pdf","svg":"image/svg+xml"};
+function toB64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(",")[1]);r.onerror=rej;r.readAsDataURL(file);});}
+async function uploadFiles(files){
+  if(!ON)return;
+  const cat=document.getElementById("upCat").value;
+  const list=[...files]; let ok=0; const fail=[];
+  for(let i=0;i<list.length;i++){
+    const f=list[i];
+    const ext=(f.name.split(".").pop()||"").toLowerCase();
+    const mime=EXT[ext]||f.type;
+    upStatus.textContent=`Enviando ${i+1} de ${list.length}… (fotos grandes podem levar alguns segundos)`;
+    if(!EXT[ext] && !/^image\//.test(f.type)){fail.push(f.name+" (formato não aceito)");continue;}
+    if(f.size>25*1024*1024){fail.push(f.name+" (maior que 25 MB)");continue;}
+    try{
+      const dados=await toB64(f);
+      await post({tipo:"foto",nome:f.name,categoria:cat,mime,dados});
+      ok++;
+      meta.enviadas.push({nome:f.name,categoria:cat}); persistLocal();
+      const showable=/^image\/(jpeg|png|webp|gif)$/.test(mime);
+      thumbs.push({nome:f.name,categoria:cat,ext:ext.toUpperCase(),url:showable?URL.createObjectURL(f):""});
+      renderGallery();
+    }catch(e){ fail.push(f.name); }
+  }
+  upStatus.innerHTML=(ok?`<span class="ok">${ok} ${ok===1?"arquivo enviado":"arquivos enviados"}.</span> `:"")+(fail.length?`Não enviados: ${esc(fail.join(", "))}. Tente de novo.`:"");
+  document.getElementById("upFile").value="";
+}
+document.getElementById("upFile").addEventListener("change",e=>uploadFiles(e.target.files));
+const drop=document.getElementById("drop");
+["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over")}));
+["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over")}));
+drop.addEventListener("drop",e=>{ if(e.dataTransfer&&e.dataTransfer.files.length)uploadFiles(e.dataTransfer.files); });
+
+/* ---------- BOOT ---------- */
+(function boot(){
+  const local=lsGet();
+  if(local.respostas)fillForm(local.respostas); else updateUI();
+  document.getElementById("uploadOn").hidden=!ON;
+  document.getElementById("uploadOff").hidden=ON;
+  renderGallery();
+  if(meta.status==="concluido"){ sendMsg.innerHTML=`<span class="ok">Questionário concluído. Você ainda pode ajustar e atualizar.</span>`; btnSend.textContent="Atualizar respostas"; }
+  setSave(local.respostas?(ON?"Salvo":"Salvo neste aparelho"):"Rascunho");
+  if(ON && local.respostas && Object.keys(local.respostas).length) flush();
+})();
+</script>
+</body>
+</html>
